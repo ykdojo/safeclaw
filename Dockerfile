@@ -3,7 +3,7 @@ FROM ubuntu:noble
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=America/Los_Angeles
 ARG NODE_VERSION=24
-ARG PLAYWRIGHT_VERSION=1.58.0
+ARG PLAYWRIGHT_MCP_VERSION=0.0.62
 ARG CLAUDE_CODE_VERSION=2.1.19
 
 ENV LANG=C.UTF-8
@@ -32,13 +32,15 @@ RUN apt-get update && \
     # Create the sclaw user
     adduser sclaw
 
-# === BAKE BROWSERS INTO IMAGE ===
+# === INSTALL Playwright MCP + browsers ===
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# Install Chromium only (not Firefox/WebKit)
-RUN mkdir /ms-playwright && \
-    npx playwright-core@${PLAYWRIGHT_VERSION} install chromium --with-deps && \
+# Install MCP globally, then use its bundled Playwright to install Chromium
+# This keeps browser versions in sync with the MCP package
+RUN npm install -g @playwright/mcp@${PLAYWRIGHT_MCP_VERSION} && \
+    mkdir /ms-playwright && \
+    /usr/lib/node_modules/@playwright/mcp/node_modules/.bin/playwright install chromium --with-deps && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf ~/.npm/ && \
     chmod -R 777 /ms-playwright
@@ -59,6 +61,7 @@ ENV DISABLE_AUTOUPDATER=1
 COPY --chown=sclaw:sclaw tools/ /home/sclaw/tools/
 COPY --chown=sclaw:sclaw setup/CLAUDE.md /home/sclaw/.claude/CLAUDE.md
 COPY --chown=sclaw:sclaw setup/commands/ /home/sclaw/.claude/commands/
+COPY --chown=sclaw:sclaw setup/settings.json /home/sclaw/.claude/settings.json
 
 RUN curl -fsSL https://claude.ai/install.sh | bash -s -- ${CLAUDE_CODE_VERSION}
 
