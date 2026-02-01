@@ -92,9 +92,6 @@ if [ -f "$SECRETS_DIR/gh_token" ]; then
     ENV_FLAGS="$ENV_FLAGS -e GH_TOKEN=$(cat "$SECRETS_DIR/gh_token")"
 fi
 
-# Run container setup (idempotent - skips if already done)
-docker exec $ENV_FLAGS "$CONTAINER_NAME" bash -c "curl -sL https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/scripts/container-setup.sh | bash"
-
 # Attach interactively
 echo ""
 echo "Entering container..."

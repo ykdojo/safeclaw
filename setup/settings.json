@@ -3,6 +3,10 @@
     "DISABLE_AUTOUPDATER": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/scripts/context-bar.sh"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
@@ -18,11 +22,5 @@
         ]
       }
     ]
-  },
-  "mcpServers": {
-    "playwright": {
-      "command": "playwright-mcp",
-      "args": ["--headless", "--browser", "chromium", "--no-sandbox"]
-    }
   }
 }

@@ -65,13 +65,27 @@ ENV DISABLE_AUTOUPDATER=1
 COPY --chown=sclaw:sclaw setup/CLAUDE.md /home/sclaw/.claude/CLAUDE.md
 COPY --chown=sclaw:sclaw setup/settings.json /home/sclaw/.claude/settings.json
 
-# Install check-context hook script (auto half-clone at 80% context)
+# Install scripts (check-context hook, context bar status line)
 RUN mkdir -p /home/sclaw/.claude/scripts && \
     curl -sLo /home/sclaw/.claude/scripts/check-context.sh \
       https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/scripts/check-context.sh && \
-    chmod +x /home/sclaw/.claude/scripts/check-context.sh
+    curl -sLo /home/sclaw/.claude/scripts/context-bar.sh \
+      https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/scripts/context-bar.sh && \
+    chmod +x /home/sclaw/.claude/scripts/check-context.sh && \
+    chmod +x /home/sclaw/.claude/scripts/context-bar.sh
 
 RUN curl -fsSL https://claude.ai/install.sh | bash -s -- ${CLAUDE_CODE_VERSION}
+
+# === SETUP Claude Code ===
+
+# Install DX plugin and Playwright MCP server
+RUN claude plugin marketplace add ykdojo/claude-code-tips && \
+    claude plugin install dx@ykdojo && \
+    claude mcp add playwright -- playwright-mcp --headless --browser chromium --no-sandbox
+
+# Shell aliases and shortcuts
+COPY --chown=sclaw:sclaw setup/bashrc.sh /tmp/bashrc.sh
+RUN cat /tmp/bashrc.sh >> /home/sclaw/.bashrc && rm /tmp/bashrc.sh
 
 # === PATCH Claude Code ===
 
