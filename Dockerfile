@@ -45,9 +45,9 @@ RUN npm install -g @playwright/mcp@${PLAYWRIGHT_MCP_VERSION} && \
     rm -rf ~/.npm/ && \
     chmod -R 777 /ms-playwright
 
-# === INSTALL node-lief and Slack SDK ===
+# === INSTALL node-lief ===
 
-RUN npm install -g node-lief @slack/web-api
+RUN npm install -g node-lief
 ENV NODE_PATH=/usr/lib/node_modules
 
 # === INSTALL Claude Code (native binary) ===
@@ -57,10 +57,12 @@ WORKDIR /home/sclaw
 ENV PATH="/home/sclaw/.local/bin:${PATH}"
 ENV DISABLE_AUTOUPDATER=1
 
-# Bake tools and Claude config into image
-COPY --chown=sclaw:sclaw tools/ /home/sclaw/tools/
+# Auth: set these env vars for cloud deployment (no interactive login needed)
+# - CLAUDE_CODE_OAUTH_TOKEN: run `claude setup-token` locally to generate
+# - GH_TOKEN: run `gh auth token` locally to print current token
+
+# Bake Claude config into image
 COPY --chown=sclaw:sclaw setup/CLAUDE.md /home/sclaw/.claude/CLAUDE.md
-COPY --chown=sclaw:sclaw setup/commands/ /home/sclaw/.claude/commands/
 COPY --chown=sclaw:sclaw setup/settings.json /home/sclaw/.claude/settings.json
 
 # Install check-context hook script (auto half-clone at 80% context)
