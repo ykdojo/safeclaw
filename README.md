@@ -14,7 +14,7 @@ See [architecture.md](architecture.md) for design details.
 ./scripts/run.sh
 ```
 
-On first run, `run.sh` will prompt you to set up authentication tokens. Then open http://localhost:7681 in your browser.
+On first run, `run.sh` will prompt you to set up authentication tokens. It then starts a web terminal at http://localhost:7681 and opens it in your browser.
 
 ## What's included
 
