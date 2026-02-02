@@ -21,7 +21,7 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     fi
 else
     echo "Creating container: $CONTAINER_NAME"
-    docker run -d --ipc=host --name "$CONTAINER_NAME" -p 7681:7681 safeclaw sleep infinity > /dev/null
+    docker run -d --ipc=host --name "$CONTAINER_NAME" -p 127.0.0.1:7681:7681 safeclaw sleep infinity > /dev/null
 fi
 
 # === Claude Code token setup ===
