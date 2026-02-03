@@ -124,6 +124,20 @@
             background: #4a3030;
             color: #c9c5c0;
         }
+        .start-btn {
+            background: transparent;
+            border: 1px solid #3a5040;
+            color: #70a080;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .start-btn:hover {
+            background: #3a5040;
+            color: #c9c5c0;
+        }
     </style>
     <script>
         async function stopSession(name) {
@@ -138,6 +152,14 @@
         async function deleteSession(name) {
             if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
             await fetch('/api/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            location.reload();
+        }
+        async function startSession(name) {
+            await fetch('/api/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name })

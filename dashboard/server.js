@@ -65,7 +65,7 @@ function getSessions() {
 
 function stopContainer(name) {
     try {
-        execSync(`docker stop ${name}`, { encoding: 'utf8' });
+        execSync(`docker stop -t 1 ${name}`, { encoding: 'utf8' });
         return true;
     } catch (e) {
         return false;
@@ -81,6 +81,30 @@ function deleteContainer(name) {
     }
 }
 
+function startContainer(name) {
+    try {
+        execSync(`docker start ${name}`, { encoding: 'utf8' });
+        // Start ttyd inside the container
+        const secretsDir = process.env.HOME + '/.config/safeclaw/.secrets';
+        let envFlags = '';
+        try {
+            const fs = require('fs');
+            const files = fs.readdirSync(secretsDir);
+            files.forEach(f => {
+                const val = fs.readFileSync(`${secretsDir}/${f}`, 'utf8').trim();
+                envFlags += ` -e ${f}=${val}`;
+            });
+        } catch (e) {}
+
+        const sessionName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
+        const title = name === 'safeclaw' ? 'SafeClaw' : `SafeClaw - ${sessionName}`;
+        execSync(`docker exec ${envFlags} -d ${name} ttyd -W -t titleFixed="${title}" -p 7681 /home/sclaw/ttyd-wrapper.sh`, { encoding: 'utf8' });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 function renderContent(sessions) {
     if (sessions.length === 0) {
         return '<p class="empty">no sessions<br><br>./scripts/run.sh -s name</p>';
@@ -90,7 +114,7 @@ function renderContent(sessions) {
         const displayName = s.name.replace('safeclaw-', '').replace('safeclaw', 'default');
         const urlCell = s.active
             ? `<a href="${s.url}" target="_blank">${s.url}</a>`
-            : '<span class="inactive">inactive</span>';
+            : `<button class="start-btn" onclick="startSession('${s.name}')">start</button>`;
         const actionBtn = s.active
             ? `<button class="stop-btn" onclick="stopSession('${s.name}')">stop</button>`
             : `<button class="delete-btn" onclick="deleteSession('${s.name}')">delete</button>`;
@@ -146,6 +170,15 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             const { name } = JSON.parse(body);
             const success = deleteContainer(name);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success }));
+        });
+    } else if (url.pathname === '/api/start' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            const { name } = JSON.parse(body);
+            const success = startContainer(name);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success }));
         });
