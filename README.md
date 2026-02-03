@@ -54,7 +54,6 @@ Opens at http://localhost:7680 with:
 
 - `./scripts/setup-gemini.sh` - Add Gemini CLI access
 - `./scripts/setup-slack.sh` - Add Slack read access
-- `./scripts/setup-env.sh` - Add any custom environment variable
 
 ## What's included
 
