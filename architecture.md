@@ -16,16 +16,6 @@ The user interacts with Claude Code through a browser, not a local terminal. Thi
 - Full Claude Code UI - status line, colors, interactive prompts, everything
 - No custom UI code needed
 
-### Future: xterm.js + WebSocket
-
-If we need per-session URLs (`/session/abc123`) or tighter integration, we can swap ttyd for xterm.js. This would require:
-
-- node-pty (native addon, needs build tools in the container)
-- ~50-100 lines of WebSocket + HTML code
-- The tmux sessions stay the same regardless
-
-Not needed yet. ttyd is simpler and sufficient for now.
-
 ## Authentication
 
 All secrets are stored on the host in `~/.config/safeclaw/.secrets/`. Each file becomes an environment variable (filename = env var name).
