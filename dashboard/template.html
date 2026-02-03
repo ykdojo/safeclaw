@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SafeClaw</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 24px;
+        }
+        h1 {
+            font-size: 16px;
+            font-weight: normal;
+            margin-bottom: 16px;
+        }
+        h1 span { color: #d4a55a; }
+        h1 em { color: #8b949e; font-style: normal; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+        th {
+            color: #8b949e;
+            font-weight: normal;
+            font-size: 12px;
+        }
+        td a {
+            color: #d4a55a;
+            text-decoration: none;
+        }
+        td a:hover { text-decoration: underline; }
+        .volume {
+            color: #8b949e;
+            font-size: 12px;
+        }
+        .frames {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 16px;
+        }
+        .frame {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .frame-bar {
+            padding: 8px 12px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .frame-bar a {
+            color: #d4a55a;
+            text-decoration: none;
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            background: #000;
+        }
+        .empty {
+            color: #8b949e;
+            padding: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1><span>safeclaw</span> <em>sessions</em></h1>
+    {{CONTENT}}
+</body>
+</html>

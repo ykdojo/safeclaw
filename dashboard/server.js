@@ -1,7 +1,10 @@
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
 const { execSync } = require('child_process');
 
 const PORT = 7680;
+const TEMPLATE_PATH = path.join(__dirname, 'template.html');
 
 function getSessions() {
     try {
@@ -33,7 +36,11 @@ function getSessions() {
     }
 }
 
-function renderHTML(sessions) {
+function renderContent(sessions) {
+    if (sessions.length === 0) {
+        return '<p class="empty">no sessions running<br><br>./scripts/run.sh -s name</p>';
+    }
+
     const sessionRows = sessions.map(s => `
         <tr>
             <td>${s.name.replace('safeclaw-', '').replace('safeclaw', 'default')}</td>
@@ -52,94 +59,13 @@ function renderHTML(sessions) {
         </div>
     `).join('');
 
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <title>SafeClaw</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-            background: #0d1117;
-            color: #c9d1d9;
-            padding: 24px;
-        }
-        h1 {
-            font-size: 14px;
-            font-weight: normal;
-            color: #8b949e;
-            margin-bottom: 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
-        }
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #30363d;
-        }
-        th {
-            color: #8b949e;
-            font-weight: normal;
-            font-size: 12px;
-        }
-        td a {
-            color: #58a6ff;
-            text-decoration: none;
-        }
-        td a:hover { text-decoration: underline; }
-        .volume {
-            color: #8b949e;
-            font-size: 12px;
-        }
-        .frames {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 16px;
-        }
-        .frame {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .frame-bar {
-            padding: 8px 12px;
-            border-bottom: 1px solid #30363d;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-        .frame-bar a {
-            color: #58a6ff;
-            text-decoration: none;
-        }
-        iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
-            background: #000;
-        }
-        .empty {
-            color: #8b949e;
-            padding: 40px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <h1>safeclaw sessions</h1>
-    ${sessions.length === 0 ? '<p class="empty">no sessions running<br><br>./scripts/run.sh -s name</p>' : `
+    return `
     <table>
         <thead><tr><th>Session</th><th>URL</th><th>Volume</th></tr></thead>
         <tbody>${sessionRows}</tbody>
     </table>
     <div class="frames">${iframes}</div>
-    `}
-</body>
-</html>`;
+    `;
 }
 
 const server = http.createServer((req, res) => {
@@ -147,8 +73,11 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(getSessions()));
     } else {
+        const template = fs.readFileSync(TEMPLATE_PATH, 'utf8');
+        const content = renderContent(getSessions());
+        const html = template.replace('{{CONTENT}}', content);
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(renderHTML(getSessions()));
+        res.end(html);
     }
 });
 
