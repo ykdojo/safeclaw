@@ -3,6 +3,7 @@
     "DISABLE_AUTOUPDATER": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
+  "promptSuggestionEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/scripts/context-bar.sh"
