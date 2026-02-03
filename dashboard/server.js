@@ -145,9 +145,8 @@ function renderContent(sessions) {
 
     const sessionRows = sessions.map(s => {
         const displayName = s.name.replace('safeclaw-', '').replace('safeclaw', 'default');
-        const port = s.url ? s.url.split(':').pop() : '';
         const urlCell = s.active
-            ? `<a href="${s.url}" target="_blank">:${port}</a>`
+            ? `<a href="${s.url}" target="_blank">${s.url}</a>`
             : `<button class="start-btn" onclick="startSession('${s.name}')">start</button>`;
         const actionBtn = s.active
             ? `<button class="stop-btn" onclick="stopSession('${s.name}', this)">stop</button>`
