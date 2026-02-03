@@ -75,8 +75,10 @@ Tokens are stored in `~/.config/safeclaw/.secrets/` and injected as env vars on 
 |------|-----------------|
 | `CLAUDE_CODE_OAUTH_TOKEN` | `claude setup-token` (valid 1 year) |
 | `GH_TOKEN` | `gh auth token` or create a PAT at github.com/settings/tokens |
+| `GEMINI_API_KEY` | Optional - get from aistudio.google.com |
+| `SLACK_TOKEN` | Optional - `./scripts/setup-slack.sh` |
 
-You can add any additional secrets by creating files in the `.secrets/` directory. For example, `SLACK_TOKEN` becomes the `SLACK_TOKEN` env var.
+You can add any additional secrets by creating files in the `.secrets/` directory.
 
 ## Scripts
 
