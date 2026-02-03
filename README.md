@@ -29,7 +29,7 @@ On first run, `run.sh` will prompt you to set up authentication tokens. It then 
 
 - Ubuntu 24.04
 - Node.js 24 (LTS)
-- Claude Code 2.1.19 (pinned version)
+- Claude Code 2.1.19 (pinned, with optimized system prompt - ~45KB smaller)
 - GitHub CLI with auto-configured git user
 - Playwright MCP with Chromium
 - Gemini CLI 0.26.0 (optional - requires API key)
