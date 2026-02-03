@@ -38,25 +38,3 @@ Known limitation: the token from `setup-token` has limited scopes (`user:inferen
 `GH_TOKEN` is used for GitHub CLI authentication. On container start, `run.sh` also auto-configures git user (name and email) from the GitHub account.
 
 We recommend creating a separate GitHub account for SafeClaw so you can scope its permissions independently.
-
-## Sensible defaults
-
-The container comes with these defaults baked in:
-
-- Claude Code version pinned (currently 2.1.19)
-- `autoCompactEnabled: false` - prevents automatic context compaction
-- `promptSuggestionEnabled: false` - disables prompt suggestions
-- Auto half-clone hook at 85% context usage
-- Bypass permissions mode enabled (safe because it's containerized)
-
-## Implementation status
-
-### Done
-
-- All container setup baked into Dockerfile (DX plugin, Playwright MCP, aliases, status line)
-- ttyd + tmux web terminal (port 7681)
-- Claude Code auth via env var
-- GitHub auth via env var with auto git config
-- Volume mounting via `run.sh -v` flag
-- Slack integration (optional)
-- Env vars passed securely via tmux session (no files on disk)

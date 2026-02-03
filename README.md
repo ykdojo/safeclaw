@@ -67,6 +67,14 @@ Opens at http://localhost:7680 with:
 - [DX plugin](https://github.com/ykdojo/claude-code-tips#tip-44-install-the-dx-plugin), [custom status line](https://github.com/ykdojo/claude-code-tips#tip-0-customize-your-status-line), shell aliases
 - ttyd web terminal + tmux
 
+## Sensible defaults
+
+- Claude Code version pinned (currently 2.1.19)
+- `autoCompactEnabled: false` - prevents automatic context compaction
+- `promptSuggestionEnabled: false` - disables prompt suggestions
+- Auto half-clone hook at 85% context usage
+- Bypass permissions mode enabled (safe because it's containerized)
+
 ## Authentication
 
 Tokens are stored in `~/.config/safeclaw/.secrets/` and injected as env vars on each run. The filename becomes the env var name.
