@@ -12,7 +12,7 @@ function startDockerEvents() {
     dockerEvents = spawn('docker', ['events', '--filter', 'name=safeclaw', '--format', '{{.Action}}']);
     dockerEvents.stdout.on('data', (data) => {
         const action = data.toString().trim();
-        if (['start', 'stop', 'die', 'destroy'].includes(action)) {
+        if (['start', 'stop', 'die', 'destroy', 'create'].includes(action)) {
             // Notify all SSE clients
             sseClients.forEach(res => {
                 res.write(`data: ${action}\n\n`);

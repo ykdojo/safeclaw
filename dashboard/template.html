@@ -494,9 +494,14 @@
             }
         }
 
-        // SSE connection kept for future use but no auto-reload
-        // (we update DOM directly now)
+        // SSE connection for real-time updates when containers change externally
         const events = new EventSource('/api/events');
+        events.onmessage = (e) => {
+            // Reload page when containers are created/modified outside the dashboard
+            if (['create', 'start', 'stop', 'die', 'destroy'].includes(e.data)) {
+                location.reload();
+            }
+        };
 
         function updateFramesLayout() {
             const frames = document.querySelector('.frames');
