@@ -181,10 +181,10 @@ function renderContent(sessions) {
                 <tr><td><code>./scripts/run.sh</code></td><td>default session</td></tr>
                 <tr><td><code>./scripts/run.sh -s name</code></td><td>named session</td></tr>
                 <tr><td><code>./scripts/run.sh -n</code></td><td>skip opening browser</td></tr>
-                <tr><td><code>./scripts/run.sh -v ~/p:/home/sclaw/p</code></td><td>mount volume</td></tr>
+                <tr><td><code>./scripts/run.sh -v ~/myproject:/home/sclaw/myproject</code></td><td>mount volume</td></tr>
                 <tr><td><code>./scripts/run.sh -q "question"</code></td><td>start with query</td></tr>
             </table>
-            <p class="tip">tip: ${['in a session, press q or scroll to the bottom to exit scroll mode and resume typing', 'on this dashboard, press tab and enter to quickly create a new session'][Math.floor(Math.random() * 2)]}</p>
+            <p class="tip">tip: ${['in a session, press q or scroll to the bottom to exit scroll mode and resume typing', 'on this dashboard, press tab and enter to quickly create a new session', 'run node scripts/manage-env.js to manage environment variables'][Math.floor(Math.random() * 3)]}</p>
         </div>`;
     }
 
@@ -296,11 +296,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-    const url = `http://localhost:${PORT}`;
-    console.log(url);
-
-    // Open in browser
-    const { exec } = require('child_process');
-    const cmd = process.platform === 'darwin' ? 'open' : 'xdg-open';
-    exec(`${cmd} ${url}`);
+    console.log(`Dashboard: http://localhost:${PORT}`);
 });

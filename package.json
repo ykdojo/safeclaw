@@ -1,0 +1,12 @@
+{
+  "name": "safeclaw",
+  "version": "0.1.0",
+  "description": "Sandboxed Docker container running Claude Code",
+  "scripts": {
+    "dashboard": "node dashboard/server.js",
+    "manage-env": "node scripts/manage-env.js"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.2.0"
+  }
+}
