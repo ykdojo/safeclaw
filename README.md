@@ -25,7 +25,7 @@ Each Claude Code session runs in its own container. Spin up as many as you need 
 ./scripts/build.sh
 
 # Start container and web terminal
-./scripts/run.sh                # safeclaw-default on port 7681
+./scripts/run.sh
 
 # To mount a local project (host_path:container_path)
 ./scripts/run.sh -v ~/myproject:/home/sclaw/myproject
