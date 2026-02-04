@@ -476,7 +476,15 @@
                     row.querySelector('td:nth-child(4)').innerHTML = `<button class="stop-btn" onclick="stopSession('${name}', this)">stop</button>`;
                     // Add iframe (only if not already present)
                     const displayName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
-                    const frames = document.querySelector('.frames');
+                    let frames = document.querySelector('.frames');
+                    // Create frames container if it doesn't exist
+                    if (!frames) {
+                        const tableWrapper = document.querySelector('.table-wrapper');
+                        if (tableWrapper) {
+                            tableWrapper.insertAdjacentHTML('afterend', '<div class="frames single"></div>');
+                            frames = document.querySelector('.frames');
+                        }
+                    }
                     if (frames && !document.getElementById(`frame-${name}`)) {
                         frames.insertAdjacentHTML('beforeend', `
                             <div class="frame" id="frame-${name}">
