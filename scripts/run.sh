@@ -32,12 +32,9 @@ while getopts "s:v:nq:" opt; do
     esac
 done
 
-# Set container name based on session
-if [ -n "$SESSION_NAME" ]; then
-    CONTAINER_NAME="safeclaw-${SESSION_NAME}"
-else
-    CONTAINER_NAME="safeclaw"
-fi
+# Set container name based on session (default to "default")
+SESSION_NAME="${SESSION_NAME:-default}"
+CONTAINER_NAME="safeclaw-${SESSION_NAME}"
 
 # Find available port (starting from 7681)
 find_available_port() {
@@ -84,11 +81,7 @@ else
     echo "Creating container: $CONTAINER_NAME"
 
     # Create session data directory for Claude history persistence
-    if [ -n "$SESSION_NAME" ]; then
-        SESSION_DATA_DIR="$SESSIONS_DIR/$SESSION_NAME"
-    else
-        SESSION_DATA_DIR="$SESSIONS_DIR/default"
-    fi
+    SESSION_DATA_DIR="$SESSIONS_DIR/$SESSION_NAME"
     mkdir -p "$SESSION_DATA_DIR"
 
     VOLUME_FLAGS="-v $SESSION_DATA_DIR:/home/sclaw/.claude/projects"
@@ -184,11 +177,7 @@ if [ -f "$SECRETS_DIR/GH_TOKEN" ]; then
 fi
 
 # Set title based on session name
-if [ -n "$SESSION_NAME" ]; then
-    TITLE="SafeClaw - ${SESSION_NAME}"
-else
-    TITLE="SafeClaw"
-fi
+TITLE="SafeClaw - ${SESSION_NAME}"
 
 # Start ttyd with wrapper that passes env vars through to tmux
 docker exec $ENV_FLAGS -d "$CONTAINER_NAME" \

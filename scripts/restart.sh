@@ -17,14 +17,10 @@ while getopts "s:" opt; do
     esac
 done
 
-# Set container name based on session
-if [ -n "$SESSION_NAME" ]; then
-    CONTAINER_NAME="safeclaw-${SESSION_NAME}"
-    TITLE="SafeClaw - ${SESSION_NAME}"
-else
-    CONTAINER_NAME="safeclaw"
-    TITLE="SafeClaw"
-fi
+# Set container name based on session (default to "default")
+SESSION_NAME="${SESSION_NAME:-default}"
+CONTAINER_NAME="safeclaw-${SESSION_NAME}"
+TITLE="SafeClaw - ${SESSION_NAME}"
 
 if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo "Container '$CONTAINER_NAME' is not running. Use ./scripts/run.sh instead."

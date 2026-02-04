@@ -481,7 +481,7 @@
                     row.querySelector('td:nth-child(2)').innerHTML = `<a href="${url}" target="_blank">${displayUrl}</a>`;
                     row.querySelector('td:nth-child(4)').innerHTML = `<button class="stop-btn" onclick="stopSession('${name}', this)">stop</button>`;
                     // Add iframe (only if not already present)
-                    const displayName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
+                    const displayName = name.replace('safeclaw-', '');
                     let frames = document.querySelector('.frames');
                     // Create frames container if it doesn't exist
                     if (!frames) {
@@ -545,12 +545,7 @@
 
         function getExistingSessionNames() {
             const rows = document.querySelectorAll('.sessions tbody tr[data-name]');
-            return Array.from(rows).map(row => {
-                const name = row.dataset.name;
-                // Convert container name to session name (safeclaw-foo -> foo, safeclaw -> default)
-                if (name === 'safeclaw') return 'default';
-                return name.replace('safeclaw-', '');
-            });
+            return Array.from(rows).map(row => row.dataset.name.replace('safeclaw-', ''));
         }
 
         function sessionNameExists(name) {
@@ -612,7 +607,7 @@
         }
 
         function showSessionInfo(name) {
-            const displayName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
+            const displayName = name.replace('safeclaw-', '');
             document.getElementById('session-info-title').textContent = displayName;
             document.getElementById('session-exec-cmd').value = `docker exec -it ${name} tmux attach -t main`;
             document.getElementById('session-info-modal').classList.add('open');

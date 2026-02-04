@@ -158,8 +158,8 @@ function startContainer(name) {
             });
         } catch (e) {}
 
-        const sessionName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
-        const title = name === 'safeclaw' ? 'SafeClaw' : `SafeClaw - ${sessionName}`;
+        const sessionName = name.replace('safeclaw-', '');
+        const title = `SafeClaw - ${sessionName}`;
         execSync(`docker exec ${envFlags} -d ${name} ttyd -W -t titleFixed="${title}" -p 7681 /home/sclaw/ttyd-wrapper.sh`, { encoding: 'utf8' });
 
         // Get the port
@@ -189,7 +189,7 @@ function renderContent(sessions) {
     }
 
     const sessionRows = sessions.map(s => {
-        const displayName = s.name.replace('safeclaw-', '').replace('safeclaw', 'default');
+        const displayName = s.name.replace('safeclaw-', '');
         const displayUrl = s.url ? s.url.replace('http://', '') : '';
         const urlCell = s.active
             ? `<a href="${s.url}" target="_blank">${displayUrl}</a>`
@@ -212,7 +212,7 @@ function renderContent(sessions) {
     const iframes = activeSessions.map(s => `
         <div class="frame" id="frame-${s.name}">
             <div class="frame-bar">
-                <span>${s.name.replace('safeclaw-', '').replace('safeclaw', 'default')}</span>
+                <span>${s.name.replace('safeclaw-', '')}</span>
                 <div class="frame-actions">
                     <a href="#" class="frame-stop" onclick="stopSessionLink('${s.name}', this); return false;">stop</a>
                     <a href="#" onclick="document.querySelector('#frame-${s.name} iframe').src='${s.url}'; return false;">refresh</a>
