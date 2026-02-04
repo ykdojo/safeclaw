@@ -105,7 +105,7 @@ You can add any additional secrets by creating files in the `.secrets/` director
 | Script | Description |
 |--------|-------------|
 | `scripts/build.sh` | Build the Docker image and remove old container |
-| `scripts/run.sh` | Start/reuse container, inject auth, start ttyd. Use `-s name` for named sessions, `-v` for volumes, `-n` to skip browser, `-q "question"` to start with a query. |
+| `scripts/run.sh` | Start/reuse container, inject auth, start ttyd. Use `-s name` for named sessions, `-v` for volumes, `-n` to skip opening browser, `-q "question"` to start with a query. |
 | `scripts/restart.sh` | Kill and restart the web terminal (ttyd + tmux). Use `-s name` for named sessions. |
 | `scripts/setup-gemini.sh` | Set up Gemini CLI (optional) |
 | `scripts/setup-slack.sh` | Set up Slack integration (optional) |
