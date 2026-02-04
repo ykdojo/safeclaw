@@ -25,31 +25,56 @@ If the web terminal is frozen, run `./scripts/restart.sh`.
 Run multiple isolated sessions with `-s`:
 
 ```bash
-./scripts/run.sh                    # default on port 7681
-./scripts/run.sh -s work            # safeclaw-work on next available port
-./scripts/run.sh -s research        # safeclaw-research on next available port
+./scripts/run.sh -n                    # default on port 7681
+./scripts/run.sh -s work -n            # safeclaw-work on next available port
+./scripts/run.sh -s research -n        # safeclaw-research on next available port
 ```
+
+## Mounting local projects
+
+Use `-v` to mount a local directory into the container. Keep the same folder name inside the container for clarity:
+
+```bash
+./scripts/run.sh -s myproject -n -v /path/to/myproject:/home/sclaw/myproject
+```
+
+This mounts the project at `/home/sclaw/myproject` inside the container. Use the same folder name (not a generic "project") so it's clear which project you're working with. If the container already exists, it will be recreated with the new mount.
+
+## Research sessions
+
+For web research or any task requiring URL fetching, use a SafeClaw container instead of doing it directly on the host. The `-q` option sends a query directly to Claude Code inside the container:
+
+```bash
+./scripts/run.sh -s research -n -q "Research Inngest and explain how durable execution works"
+```
+
+This starts the container (or reuses an existing one) and sends the query to Claude Code running inside it.
 
 ## Dashboard
 
 Start the dashboard to manage all sessions:
 
 ```bash
-node dashboard/server.js
-
-# Or with auto-restart on changes:
 npx nodemon dashboard/server.js
 ```
+
+Always use nodemon during development for auto-restart on changes.
 
 Opens at http://localhost:7680. Shows all sessions with:
 - Start/stop/delete buttons
 - Live iframes of active sessions
 - Auto-refreshes via Docker events (SSE)
 
+## Conversation history
+
+Each session's conversation history persists at `~/.config/safeclaw/sessions/<session-name>/` on the host, mounted to `/home/sclaw/.claude/projects/` in the container.
+
+Conversations are stored as JSONL files (one per conversation). Rebuilding containers or restarting sessions won't affect history.
+
 ## Starting and stopping containers
 
 Always use these methods (they handle ttyd startup):
-- `./scripts/run.sh -s name` - create or start a session
+- `./scripts/run.sh -s name -n` - create or start a session
 - Dashboard "start" button - start a stopped session
 - `./scripts/restart.sh -s name` - restart ttyd in a running session
 

@@ -59,13 +59,16 @@ function getSessions() {
                 } catch (e) {}
             }
 
-            // Get volume mount
+            // Get volume mount (exclude internal projects mount)
             try {
                 const inspect = execSync(
-                    `docker inspect ${name} --format '{{range .Mounts}}{{if eq .Type "bind"}}{{.Source}}:{{.Destination}}{{end}}{{end}}'`,
+                    `docker inspect ${name} --format '{{range .Mounts}}{{if eq .Type "bind"}}{{.Source}}:{{.Destination}}\n{{end}}{{end}}'`,
                     { encoding: 'utf8' }
                 ).trim();
-                volume = inspect || '-';
+                const mounts = inspect.split('\n').filter(m =>
+                    m && !m.endsWith(':/home/sclaw/.claude/projects')
+                );
+                volume = mounts.join(', ') || '-';
             } catch (e) {}
 
             sessions.push({
@@ -102,6 +105,42 @@ function deleteContainer(name) {
         return true;
     } catch (e) {
         return false;
+    }
+}
+
+function createContainer(options) {
+    try {
+        const scriptPath = path.join(__dirname, '..', 'scripts', 'new.sh');
+        let args = '-n'; // always skip browser open (we handle it in frontend)
+
+        if (options.name) {
+            args += ` -s ${options.name}`;
+        }
+        if (options.volume) {
+            args += ` -v ${options.volume}`;
+        }
+        if (options.query) {
+            // Escape quotes in the query
+            const escapedQuery = options.query.replace(/"/g, '\\"');
+            args += ` -q "${escapedQuery}"`;
+        }
+
+        const output = execSync(`${scriptPath} ${args}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+
+        // Extract URL from output
+        const urlMatch = output.match(/http:\/\/localhost:\d+/);
+        const url = urlMatch ? urlMatch[0] : null;
+
+        return { success: true, url };
+    } catch (e) {
+        // execSync error has stderr as Buffer
+        let error = 'Failed to create session';
+        if (e.stderr && e.stderr.length > 0) {
+            error = e.stderr.toString().trim();
+        } else if (e.message) {
+            error = e.message;
+        }
+        return { success: false, error };
     }
 }
 
@@ -145,7 +184,7 @@ function renderContent(sessions) {
                 <tr><td><code>./scripts/run.sh -v ~/p:/home/sclaw/p</code></td><td>mount volume</td></tr>
                 <tr><td><code>./scripts/run.sh -q "question"</code></td><td>start with query</td></tr>
             </table>
-            <p class="tip">tip: press q to exit scroll mode and resume typing</p>
+            <p class="tip">tip: ${['in a session, press q or scroll to the bottom to exit scroll mode and resume typing', 'on this dashboard, press tab and enter to quickly create a new session'][Math.floor(Math.random() * 2)]}</p>
         </div>`;
     }
 
@@ -161,7 +200,7 @@ function renderContent(sessions) {
 
         return `
         <tr class="${s.active ? '' : 'inactive-row'}" data-name="${s.name}" data-url="${s.url || ''}">
-            <td>${displayName}</td>
+            <td><a href="#" class="session-name" onclick="showSessionInfo('${s.name}'); return false;">${displayName}</a></td>
             <td>${urlCell}</td>
             <td class="volume">${s.volume || '-'}</td>
             <td>${actionBtn}</td>
@@ -191,7 +230,7 @@ function renderContent(sessions) {
             <tbody>${sessionRows}</tbody>
         </table>
     </div>
-    ${activeSessions.length > 0 ? `<div class="frames">${iframes}</div>` : ''}
+    ${activeSessions.length > 0 ? `<div class="frames${activeSessions.length === 1 ? ' single' : ''}">${iframes}</div>` : ''}
     `;
 }
 
@@ -228,6 +267,15 @@ const server = http.createServer((req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));
         });
+    } else if (url.pathname === '/api/create' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            const options = JSON.parse(body);
+            const result = createContainer(options);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        });
     } else if (url.pathname === '/api/events') {
         // Server-Sent Events for real-time updates
         res.writeHead(200, {
@@ -248,5 +296,11 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-    console.log(`http://localhost:${PORT}`);
+    const url = `http://localhost:${PORT}`;
+    console.log(url);
+
+    // Open in browser
+    const { exec } = require('child_process');
+    const cmd = process.platform === 'darwin' ? 'open' : 'xdg-open';
+    exec(`${cmd} ${url}`);
 });

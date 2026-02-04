@@ -2,7 +2,9 @@
 # Start/reuse container, inject auth tokens, start ttyd web terminal
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SECRETS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/safeclaw/.secrets"
+SAFECLAW_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/safeclaw"
+SECRETS_DIR="$SAFECLAW_DIR/.secrets"
+SESSIONS_DIR="$SAFECLAW_DIR/sessions"
 SESSION_NAME=""
 VOLUME_MOUNT=""
 NO_OPEN=false
@@ -80,12 +82,21 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     fi
 else
     echo "Creating container: $CONTAINER_NAME"
-    VOLUME_FLAG=""
+
+    # Create session data directory for Claude history persistence
+    if [ -n "$SESSION_NAME" ]; then
+        SESSION_DATA_DIR="$SESSIONS_DIR/$SESSION_NAME"
+    else
+        SESSION_DATA_DIR="$SESSIONS_DIR/default"
+    fi
+    mkdir -p "$SESSION_DATA_DIR"
+
+    VOLUME_FLAGS="-v $SESSION_DATA_DIR:/home/sclaw/.claude/projects"
     if [ -n "$VOLUME_MOUNT" ]; then
-        VOLUME_FLAG="-v $VOLUME_MOUNT"
+        VOLUME_FLAGS="$VOLUME_FLAGS -v $VOLUME_MOUNT"
         echo "Mounting volume: $VOLUME_MOUNT"
     fi
-    docker run -d --ipc=host --name "$CONTAINER_NAME" -p 127.0.0.1:${PORT}:7681 $VOLUME_FLAG safeclaw sleep infinity > /dev/null
+    docker run -d --ipc=host --name "$CONTAINER_NAME" -p 127.0.0.1:${PORT}:7681 $VOLUME_FLAGS safeclaw sleep infinity > /dev/null
 fi
 
 # === Claude Code token setup ===

@@ -14,9 +14,7 @@ This lets you run Claude Code with `--dangerously-skip-permissions` safely and f
 
 ## One session per container
 
-Each Claude Code session runs in its own container. Spin up as many as you need - they're isolated from each other and start in seconds. Run different research tasks, projects, or experiments in parallel without interference.
-
-Conversation syncing across sessions is on the roadmap.
+Each Claude Code session runs in its own container. Spin up as many as you need - they're isolated from each other and start in seconds. Run different research tasks, projects, or experiments in parallel without interference. Conversation history persists locally for each session.
 
 ## Quick start
 
@@ -39,6 +37,8 @@ On first run, `run.sh` will prompt you to set up authentication tokens. It then 
 
 ## Dashboard
 
+![Dashboard showing multiple Claude Code sessions running in parallel](assets/dashboard.png)
+
 Manage all sessions from a web dashboard:
 
 ```bash
@@ -46,9 +46,9 @@ node dashboard/server.js
 ```
 
 Opens at http://localhost:7680 with:
+- Create new sessions with volume mounts and initial queries
 - All sessions listed with start/stop/delete controls
 - Live iframe views of active sessions
-- Real-time updates via Docker events
 
 ## Optional integrations
 
@@ -59,7 +59,7 @@ Opens at http://localhost:7680 with:
 
 - Ubuntu 24.04
 - Node.js 24 (LTS)
-- Claude Code 2.1.19 (pinned, with [optimized system prompt](https://github.com/ykdojo/claude-code-tips#tip-15-slim-down-the-system-prompt) - ~45KB smaller)
+- Claude Code 2.1.30 (pinned, with [optimized system prompt](https://github.com/ykdojo/claude-code-tips#tip-15-slim-down-the-system-prompt) - ~45KB smaller)
 - GitHub CLI with auto-configured git user
 - Playwright MCP with Chromium
 - Gemini CLI 0.26.0 (optional - requires API key)
@@ -69,11 +69,21 @@ Opens at http://localhost:7680 with:
 
 ## Sensible defaults
 
-- Claude Code version pinned (currently 2.1.19)
+- Claude Code version pinned (currently 2.1.30)
 - `autoCompactEnabled: false` - prevents automatic context compaction
 - `promptSuggestionEnabled: false` - disables prompt suggestions
 - Auto [half-clone](https://github.com/ykdojo/claude-code-tips#half-clone-to-reduce-context) hook at 85% context usage
 - Bypass permissions mode enabled (safe because it's containerized)
+
+## Conversation history
+
+Each session's conversation history persists locally at:
+
+```
+~/.config/safeclaw/sessions/<session-name>/
+```
+
+This maps to `/home/sclaw/.claude/projects/` inside the container. Conversations are stored as JSONL files. Rebuilding containers or restarting sessions won't affect your history.
 
 ## Authentication
 

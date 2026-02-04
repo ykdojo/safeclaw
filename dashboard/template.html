@@ -10,20 +10,41 @@
             color: #c9c5c0;
             padding: 16px;
         }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
         h1 {
             font-size: 20px;
             font-weight: normal;
-            margin-bottom: 18px;
         }
         h1 span { color: #d4a55a; }
         h1 em { color: #8b949e; font-style: normal; }
+        .new-btn {
+            background: transparent;
+            border: 1px solid #3a5040;
+            color: #70a080;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .new-btn:hover {
+            background: #3a5040;
+            color: #c9c5c0;
+        }
         .table-wrapper {
             overflow-x: auto;
             margin-bottom: 24px;
+            max-width: 100%;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
         th, td {
             padding: 8px 12px;
@@ -40,6 +61,7 @@
             text-decoration: none;
         }
         td a:hover { text-decoration: underline; }
+        .sessions th:nth-child(4), .sessions td:nth-child(4) { width: 85px; }
         .sessions td:nth-child(2) {
             max-width: 30vw;
             overflow: hidden;
@@ -55,11 +77,16 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            direction: rtl;
+            text-align: left;
         }
         .frames {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
+        }
+        .frames.single {
+            grid-template-columns: 1fr;
         }
         @media (max-width: 900px) {
             .frames {
@@ -95,8 +122,10 @@
         }
         .empty {
             color: #8b949e;
-            padding: 60px 40px;
+            padding: 32px 16px;
             text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
         }
         .empty > p {
             font-size: 20px;
@@ -105,6 +134,7 @@
         .help {
             margin: 0 auto;
             border-collapse: collapse;
+            max-width: 100%;
         }
         .help td {
             padding: 8px 12px;
@@ -113,6 +143,12 @@
         }
         .help td:first-child {
             white-space: nowrap;
+        }
+        @media (max-width: 600px) {
+            .help td:first-child {
+                white-space: normal;
+                word-break: break-all;
+            }
         }
         .help code {
             color: #c9c5c0;
@@ -146,6 +182,13 @@
         .inactive-row td {
             opacity: 0.6;
         }
+        .session-name {
+            color: #c9c5c0;
+            text-decoration: none;
+        }
+        .session-name:hover {
+            color: #d4a55a;
+        }
         .delete-btn {
             background: transparent;
             border: 1px solid #4a3030;
@@ -174,6 +217,121 @@
             background: #3a5040;
             color: #c9c5c0;
         }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #1c1917;
+            border: 1px solid #2a2724;
+            border-radius: 8px;
+            padding: 24px;
+            min-width: 400px;
+            max-width: 90vw;
+        }
+        .modal h2 {
+            font-size: 16px;
+            font-weight: normal;
+            margin-bottom: 6px;
+            color: #c9c5c0;
+        }
+        .modal-subtitle {
+            font-size: 12px;
+            color: #6b6560;
+            margin-bottom: 20px;
+        }
+        .modal-field {
+            margin-bottom: 16px;
+        }
+        .modal-field label {
+            display: block;
+            font-size: 12px;
+            color: #8b949e;
+            margin-bottom: 6px;
+        }
+        .modal-field input[type="text"] {
+            width: 100%;
+            padding: 8px 10px;
+            background: #141210;
+            border: 1px solid #2a2724;
+            border-radius: 4px;
+            color: #c9c5c0;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .modal-field input[type="text"]:focus {
+            outline: none;
+            border-color: #3a5040;
+        }
+        .modal-field input[type="text"]::placeholder {
+            color: #6b6560;
+        }
+        .modal-hint {
+            font-size: 11px;
+            color: #6b6560;
+            margin-top: 4px;
+        }
+        .modal-field-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .modal-field-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #70a080;
+            color-scheme: dark;
+        }
+        .modal-field-checkbox label {
+            font-size: 14px;
+            color: #c9c5c0;
+            cursor: pointer;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .modal-cancel {
+            background: transparent;
+            border: 1px solid #2a2724;
+            color: #8b949e;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .modal-cancel:hover {
+            background: #2a2724;
+            color: #c9c5c0;
+        }
+        .modal-submit {
+            background: #3a5040;
+            border: 1px solid #3a5040;
+            color: #c9c5c0;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .modal-submit:hover {
+            background: #4a6050;
+        }
     </style>
     <script>
         let activeConfirm = null;
@@ -195,6 +353,7 @@
                     // Remove iframe
                     const frame = document.getElementById(`frame-${name}`);
                     if (frame) frame.remove();
+                    updateFramesLayout();
                 });
                 return;
             }
@@ -246,6 +405,7 @@
                     // Remove iframe
                     const frame = document.getElementById(`frame-${name}`);
                     if (frame) frame.remove();
+                    updateFramesLayout();
                 });
                 return;
             }
@@ -275,6 +435,10 @@
                     // Remove iframe if exists
                     const frame = document.getElementById(`frame-${name}`);
                     if (frame) frame.remove();
+                    updateFramesLayout();
+                    // Reload if no sessions left
+                    const remaining = document.querySelectorAll('.sessions tbody tr');
+                    if (remaining.length === 0) location.reload();
                 });
                 return;
             }
@@ -334,10 +498,135 @@
         // (we update DOM directly now)
         const events = new EventSource('/api/events');
 
+        function updateFramesLayout() {
+            const frames = document.querySelector('.frames');
+            if (frames) {
+                const count = frames.querySelectorAll('.frame').length;
+                frames.classList.toggle('single', count === 1);
+            }
+        }
+
+        function openNewSessionModal() {
+            document.getElementById('new-session-modal').classList.add('open');
+            document.getElementById('session-name').focus();
+        }
+
+        function closeNewSessionModal() {
+            document.getElementById('new-session-modal').classList.remove('open');
+            // Reset form
+            document.getElementById('session-name').value = '';
+            document.getElementById('session-volume').value = '';
+            document.getElementById('session-query').value = '';
+            document.getElementById('session-open-tab').checked = false;
+        }
+
+        async function submitNewSession() {
+            const name = document.getElementById('session-name').value.trim();
+            const volume = document.getElementById('session-volume').value.trim();
+            const query = document.getElementById('session-query').value.trim();
+            const openTab = document.getElementById('session-open-tab').checked;
+
+            const res = await fetch('/api/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, volume, query, openTab })
+            });
+            const data = await res.json();
+            if (data.success) {
+                closeNewSessionModal();
+                if (openTab && data.url) {
+                    window.open(data.url, '_blank');
+                }
+                location.reload();
+            } else {
+                alert(data.error || 'Failed to create session');
+            }
+        }
+
+        function showSessionInfo(name) {
+            const displayName = name.replace('safeclaw-', '').replace('safeclaw', 'default');
+            document.getElementById('session-info-title').textContent = displayName;
+            document.getElementById('session-exec-cmd').value = `docker exec -it ${name} tmux attach -t main`;
+            document.getElementById('session-info-modal').classList.add('open');
+        }
+
+        function closeSessionInfoModal() {
+            document.getElementById('session-info-modal').classList.remove('open');
+        }
+
+        function copyExecCmd() {
+            const cmd = document.getElementById('session-exec-cmd').value;
+            navigator.clipboard.writeText(cmd);
+            const btn = document.querySelector('#session-info-modal .modal-submit');
+            btn.textContent = 'copied';
+            setTimeout(() => btn.textContent = 'copy', 1500);
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeNewSessionModal();
+                closeSessionInfoModal();
+            }
+        });
+
+        // Close modal on overlay click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeNewSessionModal();
+                closeSessionInfoModal();
+            }
+        });
+
     </script>
 </head>
 <body>
-    <h1><span>safeclaw</span> <em>sessions</em></h1>
+    <header>
+        <h1><span>safeclaw</span> <em>sessions</em></h1>
+        <button class="new-btn" onclick="openNewSessionModal()">+ new</button>
+    </header>
     {{CONTENT}}
+
+    <div id="new-session-modal" class="modal-overlay">
+        <div class="modal">
+            <h2>new session</h2>
+            <p class="modal-subtitle">each session runs in its own isolated container</p>
+            <div class="modal-field">
+                <label for="session-name">session name</label>
+                <input type="text" id="session-name" placeholder="default">
+                <p class="modal-hint">use a unique name to create a new session</p>
+            </div>
+            <div class="modal-field">
+                <label for="session-volume">volume mount</label>
+                <input type="text" id="session-volume" placeholder="~/myproject:/home/sclaw/myproject">
+            </div>
+            <div class="modal-field">
+                <label for="session-query">initial query</label>
+                <input type="text" id="session-query" placeholder="Research topic X...">
+            </div>
+            <div class="modal-field-checkbox">
+                <input type="checkbox" id="session-open-tab">
+                <label for="session-open-tab">open in new tab</label>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-cancel" onclick="closeNewSessionModal()">cancel</button>
+                <button class="modal-submit" onclick="submitNewSession()">create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="session-info-modal" class="modal-overlay">
+        <div class="modal">
+            <h2 id="session-info-title">session</h2>
+            <div class="modal-field">
+                <label>enter container</label>
+                <input type="text" id="session-exec-cmd" readonly onclick="this.select()">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-cancel" onclick="closeSessionInfoModal()">close</button>
+                <button class="modal-submit" onclick="copyExecCmd()">copy</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
