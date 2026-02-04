@@ -85,15 +85,11 @@ Always use these methods (they handle ttyd startup):
 When sending commands to the container's tmux session with `tmux send-keys`, the message may not go through on the first Enter. If `tmux capture-pane` shows the prompt is still empty (the `❯` line has no text after it, or the text is there but hasn't been submitted), send additional Enter keys:
 
 ```bash
-docker exec safeclaw tmux send-keys -t main Enter
+docker exec safeclaw-default tmux send-keys -t main Enter
+docker exec safeclaw-default tmux send-keys -t main 'your command' Enter
+docker exec safeclaw-default tmux capture-pane -t main -p
 ```
 
-For named sessions, use the container name:
-
-```bash
-docker exec safeclaw-work tmux send-keys -t main 'your command' Enter
-docker exec safeclaw-work tmux send-keys -t main Enter
-docker exec safeclaw-work tmux capture-pane -t main -p
-```
+For other sessions, replace `default` with the session name (e.g., `safeclaw-work`).
 
 Always verify with `tmux capture-pane -t main -p` that the command was actually submitted.
