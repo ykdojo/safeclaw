@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=America/Los_Angeles
 ARG NODE_VERSION=24
 ARG PLAYWRIGHT_MCP_VERSION=0.0.62
-ARG CLAUDE_CODE_VERSION=2.1.30
+ARG CLAUDE_CODE_VERSION=2.1.32
 ARG GEMINI_CLI_VERSION=0.26.0
 
 ENV LANG=C.UTF-8
@@ -90,7 +90,7 @@ RUN jq '. + {hasCompletedOnboarding: true, bypassPermissionsModeAccepted: true, 
     mv /tmp/.claude.json.tmp /home/sclaw/.claude.json
 
 # Set default model (must be after plugin install which rewrites settings.json)
-RUN jq '. + {model: "claude-opus-4-5-20251101"}' /home/sclaw/.claude/settings.json > /tmp/settings.json.tmp && \
+RUN jq '. + {model: "claude-opus-4-6"}' /home/sclaw/.claude/settings.json > /tmp/settings.json.tmp && \
     mv /tmp/settings.json.tmp /home/sclaw/.claude/settings.json
 
 # Shell aliases and shortcuts
