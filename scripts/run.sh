@@ -73,6 +73,10 @@ fi
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
         echo "Reusing running container: $CONTAINER_NAME"
+        # Restart ttyd/tmux so fresh env vars take effect
+        docker exec "$CONTAINER_NAME" pkill -f ttyd 2>/dev/null
+        docker exec "$CONTAINER_NAME" tmux kill-server 2>/dev/null
+        sleep 1
     else
         echo "Starting existing container: $CONTAINER_NAME"
         docker start "$CONTAINER_NAME" > /dev/null
