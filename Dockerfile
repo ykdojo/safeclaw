@@ -55,6 +55,10 @@ ENV NODE_PATH=/usr/lib/node_modules
 
 USER sclaw
 WORKDIR /home/sclaw
+
+# Pre-configure Gemini CLI to use API key auth (no interactive prompt)
+RUN mkdir -p /home/sclaw/.gemini && \
+    echo '{"security":{"auth":{"selectedType":"gemini-api-key"}}}' > /home/sclaw/.gemini/settings.json
 ENV PATH="/home/sclaw/.local/bin:${PATH}"
 ENV DISABLE_AUTOUPDATER=1
 
