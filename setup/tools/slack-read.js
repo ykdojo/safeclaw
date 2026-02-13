@@ -6,17 +6,30 @@
 const { WebClient } = require('@slack/web-api');
 
 // Get token from env var
-function getToken() {
-    const token = process.env.SLACK_TOKEN;
+function getToken(envVarName = 'SLACK_TOKEN') {
+    const token = process.env[envVarName];
     if (!token) {
-        console.error('SLACK_TOKEN env var not set.');
+        console.error(`${envVarName} env var not set.`);
         console.error('Run: ./scripts/setup-slack.sh');
         process.exit(1);
     }
     return token;
 }
 
-const client = new WebClient(getToken());
+// Parse --token flag
+let tokenEnvVar = 'SLACK_TOKEN';
+const rawArgs = process.argv.slice(2);
+const tokenFlagIdx = rawArgs.indexOf('--token');
+if (tokenFlagIdx !== -1) {
+    tokenEnvVar = rawArgs[tokenFlagIdx + 1];
+    if (!tokenEnvVar) {
+        console.error('--token requires an env var name');
+        process.exit(1);
+    }
+    rawArgs.splice(tokenFlagIdx, 2);
+}
+
+const client = new WebClient(getToken(tokenEnvVar));
 
 // Commands
 const commands = {
@@ -97,6 +110,11 @@ const commands = {
     help() {
         console.log(`Slack Read-Only Tool
 
+Usage: slack-read.js [--token ENV_VAR] <command> [args]
+
+Options:
+  --token ENV_VAR       Use a different env var (default: SLACK_TOKEN)
+
 Commands:
   channels              List all channels (public & private)
   dms                   List DMs and group DMs
@@ -111,7 +129,7 @@ Commands:
 
 // Main
 async function main() {
-    const [,, command, ...args] = process.argv;
+    const [command, ...args] = rawArgs;
 
     if (!command || !commands[command]) {
         commands.help();
