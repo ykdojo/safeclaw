@@ -666,11 +666,15 @@
             setTimeout(() => btn.textContent = 'copy', 1500);
         }
 
-        // Close modal on escape
+        // Close modal on escape, submit on Enter
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeNewSessionModal();
                 closeSessionInfoModal();
+            }
+            if (e.key === 'Enter' && document.getElementById('new-session-modal').classList.contains('open')) {
+                e.preventDefault();
+                submitNewSession();
             }
         });
 
