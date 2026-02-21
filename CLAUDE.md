@@ -18,6 +18,17 @@ This opens http://localhost:7681 in the browser. Verify:
 2. Confirm it shows the correct model (Opus 4.6) and doesn't ask for login
 3. Send a message and confirm it gets a response
 
+## Agent type (Claude vs cursor)
+
+Use `-a` to choose which agent runs in the terminal. Default is `claude`.
+
+```bash
+./scripts/run.sh -n                    # Claude Code (default)
+./scripts/run.sh -s work -n -a cursor   # Cursor agent in this session
+```
+
+The choice is stored in the container's env (`SAFECLAW_AGENT`). Restarting the same container reuses the last agent type. The Cursor CLI is installed in the image; the binary is `agent` and is aliased as `cursor`.
+
 ## Multiple sessions
 
 Run multiple isolated sessions with `-s`:

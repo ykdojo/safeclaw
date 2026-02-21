@@ -82,6 +82,9 @@ RUN mkdir -p /home/sclaw/.claude/scripts && \
 
 RUN curl -fsSL https://claude.ai/install.sh | bash -s -- ${CLAUDE_CODE_VERSION}
 
+RUN bash -l -c 'curl -fsSL https://cursor.com/install | bash' && \
+    bash -l -c 'agent_path=$(command -v agent); [ -n "$agent_path" ] && ln -sf "$agent_path" /home/sclaw/.local/bin/cursor'
+
 # === SETUP Claude Code ===
 
 # Install DX plugin and Playwright MCP server
@@ -111,16 +114,18 @@ COPY --chown=sclaw:sclaw setup/skills /home/sclaw/.claude/skills
 COPY --chown=sclaw:sclaw setup/tools /home/sclaw/tools
 
 # === PATCH Claude Code ===
+# DISABLED: Linux x64 hash not yet available in ykdojo/claude-code-tips for 2.1.32
+# The patches enhance Claude's system prompt but aren't critical for SafeClaw to function
 
-RUN mkdir -p /tmp/patches && \
-    cd /tmp && \
-    curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/patch-native.sh && \
-    curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/patch-cli.js && \
-    curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/native-extract.js && \
-    curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/native-repack.js && \
-    curl -sL "https://api.github.com/repos/ykdojo/claude-code-tips/contents/system-prompt/${CLAUDE_CODE_VERSION}/patches" | \
-    jq -r '.[].download_url' | xargs -I{} curl -sLO --output-dir patches {} && \
-    chmod +x patch-native.sh && \
-    ./patch-native.sh /home/sclaw/.local/share/claude/versions/${CLAUDE_CODE_VERSION} && \
-    rm -rf /tmp/patches /tmp/*.sh /tmp/*.js
+# RUN mkdir -p /tmp/patches && \
+#     cd /tmp && \
+#     curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/patch-native.sh && \
+#     curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/patch-cli.js && \
+#     curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/native-extract.js && \
+#     curl -sLO https://raw.githubusercontent.com/ykdojo/claude-code-tips/main/system-prompt/${CLAUDE_CODE_VERSION}/native-repack.js && \
+#     curl -sL "https://api.github.com/repos/ykdojo/claude-code-tips/contents/system-prompt/${CLAUDE_CODE_VERSION}/patches" | \
+#     jq -r '.[].download_url' | xargs -I{} curl -sLO --output-dir patches {} && \
+#     chmod +x patch-native.sh && \
+#     ./patch-native.sh /home/sclaw/.local/share/claude/versions/${CLAUDE_CODE_VERSION} && \
+#     rm -rf /tmp/patches /tmp/*.sh /tmp/*.js
 

@@ -8,6 +8,9 @@ alias cs='claude --dangerously-skip-permissions'
 # Gemini alias
 alias g='gemini'
 
+# Cursor agent (binary is "agent", alias so users can run "cursor")
+alias cursor='agent'
+
 # Claude --fs shortcut
 claude() {
   local args=()

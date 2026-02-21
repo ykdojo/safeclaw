@@ -9,9 +9,10 @@ SESSION_NAME=""
 VOLUME_MOUNT=""
 NO_OPEN=false
 QUERY=""
+AGENT="claude"
 
 # Parse arguments
-while getopts "s:v:nq:" opt; do
+while getopts "s:v:nq:a:" opt; do
     case $opt in
         s)
             SESSION_NAME="$OPTARG"
@@ -25,8 +26,11 @@ while getopts "s:v:nq:" opt; do
         q)
             QUERY="$OPTARG"
             ;;
+        a)
+            AGENT="$OPTARG"
+            ;;
         *)
-            echo "Usage: $0 [-s session_name] [-v /host/path:/container/path] [-n] [-q \"question\"]"
+            echo "Usage: $0 [-s session_name] [-v /host/path:/container/path] [-n] [-q \"question\"] [-a claude|cursor]"
             exit 1
             ;;
     esac
@@ -162,6 +166,7 @@ for secret_file in "$SECRETS_DIR"/*; do
         docker exec "$CONTAINER_NAME" sh -c "echo 'export $(basename "$secret_file")=$(cat "$secret_file")' >> /home/sclaw/.env"
     fi
 done
+docker exec "$CONTAINER_NAME" sh -c "echo 'export SAFECLAW_AGENT=${AGENT}' >> /home/sclaw/.env"
 
 # Set git config from GitHub account if logged in
 if [ -f "$SECRETS_DIR/GH_TOKEN" ]; then
@@ -184,8 +189,8 @@ fi
 # Set title based on session name
 TITLE="SafeClaw - ${SESSION_NAME}"
 
-# Start ttyd with web terminal
-docker exec -d "$CONTAINER_NAME" \
+# Start ttyd with web terminal (pass agent so wrapper inherits it; .env may fail to source)
+docker exec -d -e SAFECLAW_AGENT="$AGENT" "$CONTAINER_NAME" \
     ttyd -W -t titleFixed="$TITLE" -p 7681 /home/sclaw/ttyd-wrapper.sh
 
 echo ""
@@ -194,13 +199,14 @@ echo "SafeClaw is running at: http://localhost:${PORT}"
 # Query mode - send query to the interactive session
 if [ -n "$QUERY" ]; then
     echo "Starting session and sending query..."
-    # Start tmux session directly (same as ttyd-wrapper.sh does)
     docker exec "$CONTAINER_NAME" bash -c '
         if ! tmux has-session -t main 2>/dev/null; then
             tmux -f /dev/null new -d -s main
             tmux set -t main status off
             tmux set -t main mouse on
-            tmux send-keys -t main "claude --dangerously-skip-permissions" Enter
+            cmd="claude --dangerously-skip-permissions"
+            [ "${SAFECLAW_AGENT:-claude}" = "cursor" ] && cmd="cursor"
+            tmux send-keys -t main "$cmd" Enter
         fi
     '
     # Wait for Claude Code to initialize
