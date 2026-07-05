@@ -2,6 +2,7 @@
   "env": {
     "DISABLE_AUTOUPDATER": "1"
   },
+  "promptSuggestionEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/scripts/context-bar.sh"
