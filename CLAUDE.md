@@ -15,7 +15,7 @@ After making changes, rebuild and test:
 
 This opens http://localhost:7681 in the browser. Verify:
 1. Claude Code launches automatically with bypass permissions
-2. Confirm it shows the correct model (Opus 4.8) and doesn't ask for login
+2. Confirm it shows the correct model (Opus 5) and doesn't ask for login
 3. Send a message and confirm it gets a response
 
 ## Multiple sessions
