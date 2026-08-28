@@ -60,7 +60,7 @@ Opens at http://localhost:7680 with:
 
 - Ubuntu 24.04
 - Node.js 24 (LTS)
-- Claude Code 2.1.219
+- Claude Code 2.1.250
 - GitHub CLI with auto-configured git user
 - Playwright MCP with Chromium
 - Slack read-only skill and tool (optional - requires token)
@@ -69,7 +69,7 @@ Opens at http://localhost:7680 with:
 
 ## Sensible defaults
 
-- Claude Code version pinned (currently 2.1.219)
+- Claude Code version pinned (currently 2.1.250)
 - `autoCompactEnabled: false` - prevents automatic context compaction
 - `promptSuggestionEnabled: false` - disables prompt suggestions
 - `--dangerously-skip-permissions` enabled (because it's containerized)
